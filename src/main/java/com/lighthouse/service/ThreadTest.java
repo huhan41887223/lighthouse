@@ -22,6 +22,8 @@ public class ThreadTest implements Runnable {
     @Resource
     UserRepository userRepository;
 
+    static RoleRepository roleRepository = SpringContextUtil.getBean(RoleRepository.class);
+
 
     public ThreadTest(String threadName,RoleRepository roleRepository) {
         this.threadName = threadName;
@@ -44,7 +46,7 @@ public class ThreadTest implements Runnable {
         System.out.println(upTime);
         System.out.println("线程"+threadName+"运行");
         System.out.println("----------------------------------");
-        RoleRepository roleRepository = SpringContextUtil.getBean(RoleRepository.class);
+       
         Role role = new Role();
         role.setName("admin");
         roleRepository.save(role);
