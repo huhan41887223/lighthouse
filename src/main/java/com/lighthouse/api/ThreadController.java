@@ -14,9 +14,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.util.LinkedList;
 import java.util.List;
-import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.FutureTask;
+import java.util.concurrent.*;
+import java.util.concurrent.locks.Lock;
 
 @Controller
 @RequestMapping("/huhan")
@@ -58,7 +57,9 @@ public class ThreadController {
         List<String> list = new LinkedList<>();
         for (int i = 0; i < 20; i++) {
             System.out.println("正在解析主线程"+i+System.currentTimeMillis());
-                futureTask = new FutureTask<Role>((Callable<Role>)()->{
+            FutureTask<Role> finalFutureTask = futureTask;
+            futureTask = new FutureTask<Role>((Callable<Role>)()->{
+                finalFutureTask.get(10,TimeUnit.SECONDS);
                 Role role = new Role();
                 role.setName("callable");
                 return roleRepository.save(role);
@@ -71,6 +72,8 @@ public class ThreadController {
             Thread thread = new Thread(futureTask);
             Thread thread1 = new Thread(futureTask1);
             thread1.start();
+            thread1.join();
+            thread.join();
             thread.start();
             Thread.sleep(1000);
             System.out.println(futureTask.get().toString()+"地址值为"+futureTask.get().hashCode());
@@ -79,6 +82,58 @@ public class ThreadController {
             list.add(futureTask1.get().toString());
         }
         return list;
+    }
+
+    // http://127.0.0.1:8080/user/123/roles/222
+    @ApiOperation("join的用途")
+    @PostMapping(value = "/thread/join")
+    @ResponseBody
+    public Object threadJoin() throws InterruptedException {
+        Thread t1 = new Thread(()->{
+            Role role = new Role();
+            role.setName("t1");
+            try {
+                Thread.sleep(5_000L);
+                System.out.println("M1" + "数据采集结束，花费时间:" + 5_000L);
+
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        });
+        t1.setName("M1");
+        Thread t2 = new Thread(()->{
+            Role role = new Role();
+            role.setName("t2");
+
+            try {
+                Thread.sleep(10_000L);
+                System.out.println("M2" + "数据采集结束，花费时间:" + 10_000L);
+
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        });
+        t2.setName("M2");
+        Thread t3 = new Thread(()->{
+            Role role = new Role();
+            role.setName("t3");
+
+            try {
+                Thread.sleep(20_000L);
+                System.out.println("M3" + "数据采集结束，花费时间:" + 20_000L);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        });
+        t3.setName("M3");
+        t1.start();
+        t2.start();
+        t3.start();
+        t1.join();
+        t2.join();
+        t3.join();
+        ExecutorService executorService = new ThreadPoolExecutor(2, 2, 0L, TimeUnit.SECONDS, new LinkedBlockingQueue<Runnable>());
+        return null;
     }
 
 }
