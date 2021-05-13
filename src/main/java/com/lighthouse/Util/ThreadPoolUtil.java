@@ -1,9 +1,8 @@
 package com.lighthouse.Util;
 
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.LinkedBlockingQueue;
-import java.util.concurrent.ThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
+import com.google.common.util.concurrent.ThreadFactoryBuilder;
+
+import java.util.concurrent.*;
 
 public class ThreadPoolUtil<T,R> {
 
@@ -16,6 +15,7 @@ public class ThreadPoolUtil<T,R> {
     }
 
     public static ExecutorService getFixedThreadPool(Integer threadNum){
+        ThreadFactory threadFactory = new ThreadFactoryBuilder().setNameFormat("线程I型%D").setDaemon(true).build();
             return new ThreadPoolExecutor(threadNum, threadNum, 0L, TimeUnit.SECONDS, new LinkedBlockingQueue<>());
     }
 

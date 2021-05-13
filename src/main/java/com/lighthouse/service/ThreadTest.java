@@ -46,7 +46,7 @@ public class ThreadTest implements Runnable {
         System.out.println(upTime);
         System.out.println("线程"+threadName+"运行");
         System.out.println("----------------------------------");
-       
+
         Role role = new Role();
         role.setName("admin");
         roleRepository.save(role);
