@@ -19,6 +19,11 @@ public class ThreadPoolUtil<T,R> {
             return new ThreadPoolExecutor(threadNum, threadNum, 0L, TimeUnit.SECONDS, new LinkedBlockingQueue<>());
     }
 
+    public static ExecutorService getCachedThreadPool(Integer threadNum){
+        ThreadFactory threadFactory = new ThreadFactoryBuilder().setNameFormat("线程I型%D").setDaemon(true).build();
+        return new ThreadPoolExecutor(threadNum, threadNum, 0L, TimeUnit.SECONDS, new LinkedBlockingQueue<>());
+    }
+
 
 
 

@@ -1,14 +1,16 @@
-package com;
+package com.lighthouse.service;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.StringJoiner;
 
 import static java.util.stream.Collectors.toList;
 
-public class test {
-    public static void main(String[] args) {
+public class ListService {
+
+    /**
+     *    交集并集差集等list操作
+     */
+    public void listAssemble(){
         List<String> list1 = new ArrayList<String>();
         list1.add("1");
         list1.add("2");
@@ -54,4 +56,5 @@ public class test {
         System.out.println("---原来的List2---");
         list2.parallelStream().forEachOrdered(System.out :: println);
     }
+
 }
